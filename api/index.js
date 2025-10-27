@@ -1,3 +1,4 @@
+// api/index.js
 import express from "express";
 import mongoose from "mongoose";
 import multer from "multer";
@@ -16,9 +17,9 @@ app.use(express.static("public"));
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
-  .catch(err => console.log("❌ DB Error:", err));
+  .catch(err => console.log("❌ DB connection error:", err));
 
-// Cloudinary config
+// Cloudinary setup
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -27,14 +28,14 @@ cloudinary.v2.config({
 
 const upload = multer();
 
-// Upload route
+// Upload endpoint
 app.post("/upload", upload.single("file"), async (req, res) => {
   if (!req.file) return res.status(400).send("No file uploaded");
 
   const uploadStream = cloudinary.v2.uploader.upload_stream(
     { resource_type: "auto", folder: "simple-uploader" },
     async (error, result) => {
-      if (error) return res.status(500).json({ error });
+      if (error) return res.status(500).json({ error: error.message });
 
       const fileRecord = await File.create({
         originalName: req.file.originalname,
@@ -50,10 +51,10 @@ app.post("/upload", upload.single("file"), async (req, res) => {
   streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
 });
 
-// Get all files
+// Get all uploaded files
 app.get("/files", async (req, res) => {
   const files = await File.find().sort({ uploadedAt: -1 });
   res.json(files);
 });
 
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+export default app;

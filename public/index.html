@@ -17,7 +17,7 @@
   <script>
     const form = document.getElementById("uploadForm");
     const fileList = document.getElementById("fileList");
-    const baseURL = "/api"; // ✅ Correct prefix for Vercel
+    const baseURL = "/api";
 
     async function loadFiles() {
       try {
@@ -26,16 +26,7 @@
         fileList.innerHTML = "";
         files.forEach(f => {
           const li = document.createElement("li");
-
-          // Inline preview for text files, new tab for PDFs
-          if (f.mimetype.includes("pdf")) {
-            li.innerHTML = `<a href="${f.url}" target="_blank">${f.originalName}</a>`;
-          } else if (f.mimetype.includes("text")) {
-            li.innerHTML = `<details><summary>${f.originalName}</summary><iframe src="${f.url}" width="100%" height="200"></iframe></details>`;
-          } else {
-            li.innerHTML = `<a href="${f.url}" target="_blank">${f.originalName}</a>`;
-          }
-
+          li.innerHTML = `<a href="${f.url}" target="_blank">${f.originalName}</a>`;
           fileList.appendChild(li);
         });
       } catch (err) {
