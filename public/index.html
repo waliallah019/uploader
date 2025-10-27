@@ -24,11 +24,7 @@
       fileList.innerHTML = "";
       files.forEach(f => {
         const li = document.createElement("li");
-        if (f.mimetype === "application/pdf") {
-          li.innerHTML = `<a href="${f.url}" target="_blank">${f.originalName}</a>`;
-        } else {
-          li.innerHTML = `<a href="${f.url}" target="_blank">${f.originalName}</a>`;
-        }
+        li.innerHTML = `<a href="${f.url}" target="_blank">${f.originalName}</a>`;
         fileList.appendChild(li);
       });
     }

@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const fileSchema = new mongoose.Schema({
-  filename: String,
   originalName: String,
   mimetype: String,
   size: Number,
