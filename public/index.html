@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple File Uploader</title>
+</head>
+<body>
+  <h2>Upload PDF or Text File</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" required />
+    <button type="submit">Upload</button>
+  </form>
+
+  <h2>Uploaded Files</h2>
+  <ul id="fileList"></ul>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    const fileList = document.getElementById("fileList");
+
+    async function loadFiles() {
+      const res = await fetch("/files");
+      const files = await res.json();
+      fileList.innerHTML = "";
+      files.forEach(f => {
+        const li = document.createElement("li");
+        if (f.mimetype === "application/pdf") {
+          li.innerHTML = `<a href="${f.url}" target="_blank">${f.originalName}</a>`;
+        } else {
+          li.innerHTML = `<a href="${f.url}" target="_blank">${f.originalName}</a>`;
+        }
+        fileList.appendChild(li);
+      });
+    }
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      await fetch("/upload", { method: "POST", body: formData });
+      form.reset();
+      loadFiles();
+    });
+
+    loadFiles();
+  </script>
+</body>
+</html>
